@@ -41,7 +41,6 @@ class KafkaIntegrationTest {
 
     @Test
     void testKafkaListener_ShouldConsumeMessageAndConfirmReservation() {
-        // 1. Arrange: Manually save a "PENDING" reservation into the H2 database
         RoomReservation reservation = new RoomReservation();
         reservation.setNameOfCustomer("Kafka Tester");
         reservation.setRoomNumber("101");
@@ -50,7 +49,6 @@ class KafkaIntegrationTest {
         reservation.setRoomSegment(RoomSegment.MEDIUM);
         reservation.setModeOfPayment(PaymentMode.BANK_TRANSFER);
 
-        // CRITICAL: We need a reference and an unpaid total amount
         reservation.setPaymentReference("REF-KAFKA-123");
         reservation.setTotalAmount(500.0);
         reservation.setPaidAmount(0.0);
@@ -58,7 +56,6 @@ class KafkaIntegrationTest {
 
         RoomReservation savedReservation = repository.save(reservation);
 
-        // 2. Act: Send a message to the embedded Kafka topic (paying exactly the 500 owed)
         PaymentUpdateEvent event = new PaymentUpdateEvent(
                 "TRX-TEST-1",
                 "HU1234567890",
@@ -67,16 +64,11 @@ class KafkaIntegrationTest {
         );
         kafkaTemplate.send("bank-transfer-payment-update", event);
 
-        // 3. Assert: Wait for the Async Listener to process the message
-        // Awaitility will check the database every 100ms for up to 5 seconds.
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-
-            // Fetch the reservation fresh from the database
             RoomReservation updatedReservation = repository.findById(savedReservation.getReservationId()).orElse(null);
 
             assertNotNull(updatedReservation);
 
-            // If the listener worked, the money should be added, and status upgraded!
             assertEquals(500.0, updatedReservation.getPaidAmount());
             assertEquals(ReservationStatus.CONFIRMED, updatedReservation.getReservationStatus());
         });

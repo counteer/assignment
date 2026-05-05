@@ -50,7 +50,7 @@ class RoomReservationServiceTest {
 
         assertEquals(ReservationStatus.CONFIRMED, savedEntity.getReservationStatus());
         assertEquals(400.0, savedEntity.getTotalAmount());
-        assertEquals(400.0, savedEntity.getPaidAmount()); // Cash pays in full instantly
+        assertEquals(400.0, savedEntity.getPaidAmount());
         verify(repository, times(1)).save(any(RoomReservation.class));
     }
 
@@ -64,14 +64,14 @@ class RoomReservationServiceTest {
 
         assertEquals(ReservationStatus.PENDING_PAYMENT, savedEntity.getReservationStatus());
         assertEquals(400.0, savedEntity.getTotalAmount());
-        assertEquals(0.0, savedEntity.getPaidAmount()); // Cash pays in full instantly
+        assertEquals(0.0, savedEntity.getPaidAmount());
         verify(repository, times(1)).save(any(RoomReservation.class));
     }
 
     private static @NonNull RoomReservation getRoomReservation(PaymentMode paymentMode) {
         RoomReservation requestEntity = new RoomReservation();
         requestEntity.setReservationStartDate(LocalDate.of(2026, 6, 1));
-        requestEntity.setReservationEndDate(LocalDate.of(2026, 6, 5)); // 4 days
+        requestEntity.setReservationEndDate(LocalDate.of(2026, 6, 5));
         requestEntity.setRoomSegment(RoomSegment.MEDIUM);
         requestEntity.setModeOfPayment(paymentMode);
         return requestEntity;
@@ -103,7 +103,7 @@ class RoomReservationServiceTest {
 
         assertEquals(ReservationStatus.CANCELLED, savedEntity.getReservationStatus());
         assertEquals(400.0, savedEntity.getTotalAmount());
-        assertEquals(0, savedEntity.getPaidAmount()); // Cash pays in full instantly
+        assertEquals(0, savedEntity.getPaidAmount());
         verify(repository, times(1)).save(any(RoomReservation.class));
     }
 
@@ -111,7 +111,7 @@ class RoomReservationServiceTest {
     void testCreateReservation_Exceeds30Days_ShouldThrowException() {
         RoomReservation requestEntity = new RoomReservation();
         requestEntity.setReservationStartDate(LocalDate.of(2026, 6, 1));
-        requestEntity.setReservationEndDate(LocalDate.of(2026, 7, 15)); // 44 days!
+        requestEntity.setReservationEndDate(LocalDate.of(2026, 7, 15));
 
         InvalidReservationException exception = assertThrows(
                 InvalidReservationException.class,
@@ -146,7 +146,7 @@ class RoomReservationServiceTest {
         when(repository.save(any(RoomReservation.class))).thenAnswer(invocation -> invocation.getArgument(0));
         PaymentUpdateEvent event = createPaymentUpdateEvent(500.0);
 
-        service.processBankTransferUpdate(event); // Or whatever you named the method!
+        service.processBankTransferUpdate(event);
 
         assertEquals(500.0, existingReservation.getPaidAmount());
         assertEquals(ReservationStatus.CONFIRMED, existingReservation.getReservationStatus());

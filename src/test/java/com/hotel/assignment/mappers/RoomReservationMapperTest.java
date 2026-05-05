@@ -40,7 +40,7 @@ class RoomReservationMapperTest {
         assertEquals("REF-123", entity.getPaymentReference());
         assertNull(entity.getReservationId());
         assertNull(entity.getReservationStatus());
-        assertNull(entity.getTotalAmount()); // We calculate this later
+        assertNull(entity.getTotalAmount());
     }
 
     @Test
@@ -56,7 +56,7 @@ class RoomReservationMapperTest {
 
     private static @NonNull RoomReservation createRoomReservation() {
         RoomReservation entity = new RoomReservation();
-        entity.setReservationId(105L); // The DB generated this
+        entity.setReservationId(105L);
         entity.setNameOfCustomer("John Doe");
         entity.setRoomNumber("101");
         entity.setReservationStartDate(LocalDate.of(2026, 6, 1));

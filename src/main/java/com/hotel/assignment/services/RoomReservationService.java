@@ -23,7 +23,7 @@ import java.util.Optional;
 public class RoomReservationService {
     private static final Logger log = LoggerFactory.getLogger(RoomReservationService.class);
     private final RoomReservationRepository repository;
-    private final DefaultApi paymentClientApi; // Inject the external API client
+    private final DefaultApi paymentClientApi;
     private final PricingService pricingService;
 
     public RoomReservationService(RoomReservationRepository repository, DefaultApi paymentClientApi, PricingService pricingService) {
