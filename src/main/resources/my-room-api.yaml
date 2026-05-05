@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: Room Reservation API
+  description: API for confirming room reservations
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/reservations:
+    post:
+      summary: Confirm room reservation
+      operationId: createReservation
+      tags:
+        - Reservation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+      responses:
+        '201':
+          description: Reservation successfully processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          description: Bad request (e.g. Validation or payment failure)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ReservationRequest:
+      type: object
+      required:
+        - nameOfCustomer
+        - roomNumber
+        - reservationStartDate
+        - reservationEndDate
+        - roomSegment
+        - modeOfPayment
+      properties:
+        nameOfCustomer:
+          type: string
+        roomNumber:
+          type: string
+        reservationStartDate:
+          type: string
+          format: date
+        reservationEndDate:
+          type: string
+          format: date
+        roomSegment:
+          type: string
+          enum:
+            - Small
+            - Medium
+            - Large
+            - Extra Large
+        modeOfPayment:
+          type: string
+          enum:
+            - Cash
+            - Bank Transfer
+            - Credit Card
+        paymentReference:
+          type: string
+          description: Required if mode of payment is Credit Card or Bank Transfer
+
+    ReservationResponse:
+      type: object
+      properties:
+        reservationId:
+          type: integer
+          format: int64
+        reservationStatus:
+          type: string
+          enum:
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - CANCELLED
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        details:
+          type: string
