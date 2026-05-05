@@ -8,6 +8,7 @@
         <version>4.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    
     <groupId>com.hotel</groupId>
     <artifactId>assignment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -47,11 +48,10 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Swagger/OpenAPI Annotations -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.15</version> <!-- Use the latest version -->
+            <version>2.2.15</version>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
@@ -122,7 +122,6 @@
                 <version>7.22.0</version>
                 <executions>
 
-                    <!-- 1. GENERATE YOUR SERVER CODE (The part you deleted earlier) -->
                     <execution>
                         <id>generate-server-api</id>
                         <goals>
@@ -130,7 +129,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/my-room-api.yaml</inputSpec>
-                            <generatorName>spring</generatorName> <!-- Spring for Server -->
+                            <generatorName>spring</generatorName>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
                             <apiPackage>com.hotel.assignment.api.server</apiPackage>
@@ -145,7 +144,6 @@
                         </configuration>
                     </execution>
 
-                    <!-- 2. GENERATE THE CLIENT CODE (To call the payment service) -->
                     <execution>
                         <id>generate-payment-client</id>
                         <goals>
@@ -153,9 +151,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/payment-service-api.yaml</inputSpec>
-                            <generatorName>java</generatorName> <!-- Java for Client -->
+                            <generatorName>java</generatorName>
 
-                            <!-- ADD THESE TWO LINES HERE! -->
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
                             <apiPackage>com.yourcompany.app.api.client</apiPackage>
@@ -177,7 +174,6 @@
                 <version>3.11.0</version>
                 <configuration>
                     <annotationProcessorPaths>
-                        <!-- Add MapStruct processor here -->
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
