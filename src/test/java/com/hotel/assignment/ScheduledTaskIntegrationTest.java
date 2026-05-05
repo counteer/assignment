@@ -32,14 +32,14 @@ class ScheduledTaskIntegrationTest {
     @Test
     void shouldCancelOnlyOverduePendingReservations() {
         RoomReservation overduePending = saveReservationWithDateAndStatus(-40, ReservationStatus.PENDING_PAYMENT);
-        RoomReservation futurePending  = saveReservationWithDateAndStatus(10, ReservationStatus.PENDING_PAYMENT);
-        RoomReservation oldConfirmed   = saveReservationWithDateAndStatus(-50, ReservationStatus.CONFIRMED);
+        RoomReservation futurePending = saveReservationWithDateAndStatus(10, ReservationStatus.PENDING_PAYMENT);
+        RoomReservation oldConfirmed = saveReservationWithDateAndStatus(-50, ReservationStatus.CONFIRMED);
 
         cancellationTask.cancelUnpaidBankTransfers();
 
         assertReservationStatus(overduePending.getReservationId(), ReservationStatus.CANCELLED);
-        assertReservationStatus(futurePending.getReservationId(),  ReservationStatus.PENDING_PAYMENT);
-        assertReservationStatus(oldConfirmed.getReservationId(),   ReservationStatus.CONFIRMED);
+        assertReservationStatus(futurePending.getReservationId(), ReservationStatus.PENDING_PAYMENT);
+        assertReservationStatus(oldConfirmed.getReservationId(), ReservationStatus.CONFIRMED);
     }
 
 
