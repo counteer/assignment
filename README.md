@@ -13,23 +13,14 @@ dependencies**, alongside **integration tests** with 'real' connections to datab
 application error and info events.
 
 ## **Planned (or possible) enhancements**
-
-Implement **database auditing** with historical tables or Hibernate Envers, to maintain a historical log of all reservation state changes.
-
-**Event-Driven contracts**, like AsyncApi for the Kafka payloads.
-
-Integrate **Spring Boot Actuator** to show health endpoints.
-
-Introduce more **Spring Profiles** (local, dev, prod) to separate environment specific configurations. 
-
-Implement **Containerization**, creating a multi-stage Dockerfile for deployment, and a docker-compose.yml to bootstrap the local developer 
+- Implement **database auditing** with historical tables or Hibernate Envers, to maintain a historical log of all reservation state changes.
+- **Event-Driven contracts**, like AsyncApi for the Kafka payloads.
+- Integrate **Spring Boot Actuator** to show health endpoints.
+- Introduce more **Spring Profiles** (local, dev, prod) to separate environment specific configurations. 
+- Implement **Containerization**, creating a multi-stage Dockerfile for deployment, and a docker-compose.yml to bootstrap the local developer 
 environment with dependencies (Kafka broker, PostgreSQL).
-
-Utilize **boilerplate reduction** using Lombok, cleaning the code of manual getters, setters and logger instantiations.
-
-Expanding the **Event-driven architecture** by Sending outbound messages via Kafka regarding cancelled bookings, successful bookings and detected 
+- Utilize **boilerplate reduction** using Lombok, cleaning the code of manual getters, setters and logger instantiations.
+- Expanding the **Event-driven architecture** by sending outbound messages via Kafka regarding cancelled bookings, successful bookings and detected 
 overpayments.
-
-Introducing **extended validations** for reservations, such as handling bookings in the pastor double-booking the same room for the same dates.
-
-Introducing **Identity and Access Management** to introduce role-based authorizations.
+- Introducing **extended validations** for reservations, such as handling bookings in the past or double-booking the same room for the same dates.
+- Introducing **Identity and Access Management** to enable role-based authorizations.
