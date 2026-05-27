@@ -1,17 +1,14 @@
 package com.hotel.assignment.tasks;
 
+import com.hotel.assignment.entities.PaymentMode;
+import com.hotel.assignment.entities.ReservationStatus;
+import com.hotel.assignment.entities.RoomReservation;
 import com.hotel.assignment.repository.RoomReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.hotel.assignment.entities.RoomReservation;
-import com.hotel.assignment.entities.ReservationStatus;
-import com.hotel.assignment.entities.PaymentMode;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,9 +19,9 @@ import java.util.List;
 public class ReservationCancellationTask {
 
     private final RoomReservationRepository repository;
-    
+
     // Runs every day at 1:00 AM
-    @Scheduled(cron = "0 0 1 * * ?") 
+    @Scheduled(cron = "0 0 1 * * ?")
     @Transactional
     public void cancelUnpaidBankTransfers() {
         log.info("Starting scheduled task: Checking for overdue bank transfer payments...");
@@ -32,7 +29,7 @@ public class ReservationCancellationTask {
 
         List<RoomReservation> overdueReservations = repository.findByModeOfPaymentAndReservationStatusAndReservationStartDateLessThanEqual(
                 PaymentMode.BANK_TRANSFER,
-                ReservationStatus.PENDING_PAYMENT, 
+                ReservationStatus.PENDING_PAYMENT,
                 cutoffDate
         );
 

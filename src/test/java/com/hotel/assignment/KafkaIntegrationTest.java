@@ -1,20 +1,12 @@
 package com.hotel.assignment;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
+import com.hotel.assignment.dto.PaymentUpdateEvent;
+import com.hotel.assignment.entities.ReservationStatus;
 import com.hotel.assignment.entities.RoomReservation;
 import com.hotel.assignment.model.server.ReservationRequest;
 import com.hotel.assignment.model.server.ReservationResponse;
 import com.hotel.assignment.payment.client.api.DefaultApi;
 import com.hotel.assignment.repository.RoomReservationRepository;
-import com.hotel.assignment.entities.ReservationStatus;
-import com.hotel.assignment.dto.PaymentUpdateEvent;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +19,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "payment-service.base-url=http://localhost:9999"
-        }
-)
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureRestTestClient
 @EmbeddedKafka(
@@ -61,7 +56,7 @@ class KafkaIntegrationTest {
                 LocalDate.now().plusDays(5),
                 ReservationRequest.RoomSegmentEnum.MEDIUM,
                 ReservationRequest.ModeOfPaymentEnum.BANK_TRANSFER
-                );
+        );
         request.setPaymentReference("REF-KAFKA-123");
         ReservationResponse createdReservation = restClient
                 .post()

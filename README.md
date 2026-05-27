@@ -19,8 +19,8 @@ application error and info events.
 - Introduce more **Spring Profiles** (local, dev, prod) to separate environment specific configurations. 
 - Implement **Containerization**, creating a multi-stage Dockerfile for deployment, and a docker-compose.yml to bootstrap the local developer 
 environment with dependencies (Kafka broker, PostgreSQL).
-- Utilize **boilerplate reduction** using Lombok, cleaning the code of manual getters, setters and logger instantiations.
 - Expanding the **Event-driven architecture** by sending outbound messages via Kafka regarding cancelled bookings, successful bookings and detected 
 overpayments.
 - Introducing **extended validations** for reservations, such as handling bookings in the past or double-booking the same room for the same dates.
 - Introducing **Identity and Access Management** to enable role-based authorizations.
+- Improve Kafka message handling by making payment event processing idempotent, so duplicate payment events do not update the same reservation multiple times.

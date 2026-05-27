@@ -32,7 +32,7 @@ public class RoomReservationService {
 
     @Transactional
     public void processBankTransferUpdate(PaymentUpdateEvent event) {
-        String[] descriptionParts = event.transactionDescription().split(" ");
+        String[] descriptionParts = event.transactionDescription().trim().split("\\s+");
         if (descriptionParts.length < 2) {
             log.warn("Invalid transaction description format: {}", event.transactionDescription());
             return;

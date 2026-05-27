@@ -14,8 +14,12 @@ import org.springframework.stereotype.Service;
 public class BankTransferListener {
 
     private final RoomReservationService service;
-    
-    @KafkaListener(topics = "bank-transfer-payment-update", groupId = "reservation-service-group")
+
+    @KafkaListener(
+            id = "bankTransferListener",
+            topics = "bank-transfer-payment-update",
+            groupId = "reservation-service-group"
+    )
     public void consumePaymentUpdate(PaymentUpdateEvent event) {
         log.info("Received payment update for paymentId: {}, status: {}", event.paymentId(), event.amountReceived());
         service.processBankTransferUpdate(event);

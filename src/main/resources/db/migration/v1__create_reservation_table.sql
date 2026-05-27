@@ -10,5 +10,6 @@ CREATE TABLE room_reservation
     reservation_status     VARCHAR(50)  NOT NULL,
     payment_reference      VARCHAR(255),
     total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    paid_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00
+    paid_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    version BIGINT NOT NULL DEFAULT 0
 );

@@ -33,10 +33,10 @@ public class RoomReservation {
     @Column(nullable = false)
     private RoomSegment roomSegment;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal paidAmount;
 
     @Enumerated(EnumType.STRING)
@@ -49,4 +49,6 @@ public class RoomReservation {
 
     private String paymentReference;
 
+    @Version
+    private Long version;
 }
