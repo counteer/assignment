@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RoomReservationRepository extends JpaRepository<RoomReservation, Long> {
+public interface RoomReservationRepository extends JpaRepository<RoomReservation, UUID> {
      Optional<RoomReservation> findByPaymentReferenceAndReservationStatus(String reference, ReservationStatus reservationStatus);
      List<RoomReservation> findByModeOfPaymentAndReservationStatusAndReservationStartDateLessThanEqual(
              PaymentMode mode,

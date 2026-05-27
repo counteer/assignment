@@ -10,7 +10,9 @@ import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,17 +48,17 @@ class RoomReservationMapperTest {
     @Test
     void testToResponse_ShouldMapCorrectly() {
         RoomReservation entity = createRoomReservation();
-
+        UUID id= entity.getReservationId();
         ReservationResponse response = mapper.toResponse(entity);
 
         assertNotNull(response);
-        assertEquals(105L, response.getReservationId());
+        assertEquals(id, response.getReservationId());
         assertEquals(ReservationResponse.ReservationStatusEnum.PENDING_PAYMENT, response.getReservationStatus());
     }
 
     private static @NonNull RoomReservation createRoomReservation() {
         RoomReservation entity = new RoomReservation();
-        entity.setReservationId(105L);
+        entity.setReservationId(UUID.randomUUID());
         entity.setNameOfCustomer("John Doe");
         entity.setRoomNumber("101");
         entity.setReservationStartDate(LocalDate.of(2026, 6, 1));
@@ -64,8 +66,8 @@ class RoomReservationMapperTest {
         entity.setRoomSegment(RoomSegment.MEDIUM);
         entity.setModeOfPayment(PaymentMode.BANK_TRANSFER);
         entity.setPaymentReference("REF-123");
-        entity.setTotalAmount(400.0);
-        entity.setPaidAmount(0.0);
+        entity.setTotalAmount(BigDecimal.valueOf(400));
+        entity.setPaidAmount(BigDecimal.ZERO);
         entity.setReservationStatus(ReservationStatus.PENDING_PAYMENT);
         return entity;
     }

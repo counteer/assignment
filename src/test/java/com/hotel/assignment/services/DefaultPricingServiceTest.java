@@ -5,6 +5,7 @@ import com.hotel.assignment.entities.RoomSegment;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,9 +20,9 @@ class DefaultPricingServiceTest {
         LocalDate end = LocalDate.of(2026, 6, 6);
 
         RoomReservation roomReservation = createRoomReservation(start, end, RoomSegment.MEDIUM);
-        Double total = pricingService.calculateTotalAmount(roomReservation);
+        BigDecimal total = pricingService.calculateTotalAmount(roomReservation);
 
-        assertEquals(500.0, total);
+        assertEquals(BigDecimal.valueOf(500), total);
     }
 
     @Test
@@ -30,9 +31,9 @@ class DefaultPricingServiceTest {
         LocalDate end = LocalDate.of(2026, 6, 2);
         RoomReservation roomReservation = createRoomReservation(start, end, RoomSegment.LARGE);
 
-        Double total = pricingService.calculateTotalAmount(roomReservation);
+        BigDecimal total = pricingService.calculateTotalAmount(roomReservation);
 
-        assertEquals(150.0, total);
+        assertEquals(BigDecimal.valueOf(150), total);
     }
 
     private static @NonNull RoomReservation createRoomReservation(LocalDate start, LocalDate end, RoomSegment roomSegment) {

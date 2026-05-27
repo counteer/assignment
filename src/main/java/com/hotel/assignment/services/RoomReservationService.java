@@ -5,32 +5,30 @@ import com.hotel.assignment.entities.PaymentMode;
 import com.hotel.assignment.entities.ReservationStatus;
 import com.hotel.assignment.entities.RoomReservation;
 import com.hotel.assignment.exceptions.InvalidReservationException;
+import com.hotel.assignment.payment.client.api.DefaultApi;
+import com.hotel.assignment.payment.client.model.PaymentStatusResponse;
+import com.hotel.assignment.payment.client.model.PaymentStatusRetrievalRequest;
 import com.hotel.assignment.repository.RoomReservationRepository;
-import com.yourcompany.app.api.client.DefaultApi;
-import com.yourcompany.app.model.client.PaymentStatusResponse;
-import com.yourcompany.app.model.client.PaymentStatusRetrievalRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class RoomReservationService {
-    private static final Logger log = LoggerFactory.getLogger(RoomReservationService.class);
+
     private final RoomReservationRepository repository;
-    private final DefaultApi paymentClientApi;
+    private final DefaultApi paymentStatusApi; // Inject the external API client
     private final PricingService pricingService;
 
-    public RoomReservationService(RoomReservationRepository repository, DefaultApi paymentClientApi, PricingService pricingService) {
-        this.repository = repository;
-        this.paymentClientApi = paymentClientApi;
-        this.pricingService = pricingService;
-    }
 
     @Transactional
     public void processBankTransferUpdate(PaymentUpdateEvent event) {
@@ -50,14 +48,14 @@ public class RoomReservationService {
         }
 
         RoomReservation reservation = optionalReservation.get();
-        if (event.amountReceived() == null || event.amountReceived() <= 0) {
+        if (event.amountReceived() == null || event.amountReceived().signum() <= 0) {
             log.info("Invalid amount received");
             return;
         }
 
-        Double paidAmount = reservation.getPaidAmount() + event.amountReceived();
+        BigDecimal paidAmount = reservation.getPaidAmount().add(event.amountReceived());
         reservation.setPaidAmount(paidAmount);
-        if (reservation.getPaidAmount() >= reservation.getTotalAmount()) {
+        if (reservation.getPaidAmount().compareTo(reservation.getTotalAmount()) >= 0) {
             reservation.setReservationStatus(ReservationStatus.CONFIRMED);
             log.info("Reservation {} fully paid and confirmed! Amount: {}", reservation.getReservationId(), event.amountReceived());
         }
@@ -69,7 +67,7 @@ public class RoomReservationService {
         validateDates(reservation);
         PaymentMode paymentMode = PaymentMode.valueOf(reservation.getModeOfPayment().name());
 
-        Double calculatedPrice = pricingService.calculateTotalAmount(reservation);
+        BigDecimal calculatedPrice = pricingService.calculateTotalAmount(reservation);
         reservation.setTotalAmount(calculatedPrice);
 
         ReservationStatus calculatedStatus = calculateReservationStatus(reservation, paymentMode);
@@ -82,8 +80,8 @@ public class RoomReservationService {
         return savedReservation;
     }
 
-    private static double calculatePaidAmount(ReservationStatus calculatedStatus, Double calculatedPrice) {
-        return calculatedStatus == ReservationStatus.CONFIRMED ? calculatedPrice : 0.0;
+    private static BigDecimal calculatePaidAmount(ReservationStatus calculatedStatus, BigDecimal calculatedPrice) {
+        return calculatedStatus == ReservationStatus.CONFIRMED ? calculatedPrice : BigDecimal.ZERO;
     }
 
     private @NonNull ReservationStatus calculateReservationStatus(RoomReservation reservation, PaymentMode mode) {
@@ -115,7 +113,7 @@ public class RoomReservationService {
         }
         try {
             PaymentStatusRetrievalRequest clientReq = new PaymentStatusRetrievalRequest().paymentReference(paymentReference);
-            PaymentStatusResponse clientRes = paymentClientApi.paymentStatusPost(clientReq);
+            PaymentStatusResponse clientRes = paymentStatusApi.paymentStatusPost(clientReq);
             return "CONFIRMED".equalsIgnoreCase(clientRes.getStatus());
         } catch (Exception e) {
             log.error("Failed to verify credit card payment ID: {}", paymentReference, e);

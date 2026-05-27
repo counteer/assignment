@@ -8,7 +8,7 @@
         <version>4.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    
+
     <groupId>com.hotel</groupId>
     <artifactId>assignment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -43,6 +43,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -56,7 +61,7 @@
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.6</version>
+            <version>0.2.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,13 +91,13 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-restclient</artifactId>
+            <artifactId>spring-boot-starter-restclient-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-resttestclient</artifactId>
-            <scope>test</scope>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.46</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -117,35 +122,69 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+                <configuration>
+                    <release>${java.version}</release>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.46</version>
+                        </path>
+
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.5.5.Final</version>
+                        </path>
+
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>7.22.0</version>
-                <executions>
 
+                <executions>
                     <execution>
-                        <id>generate-server-api</id>
+                        <id>generate-room-server-api</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/my-room-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
+
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
+
                             <apiPackage>com.hotel.assignment.api.server</apiPackage>
                             <modelPackage>com.hotel.assignment.model.server</modelPackage>
+
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
-                                <useSpringBoot3>true</useSpringBoot3>
-                                <generateApiTests>false</generateApiTests>
-                                <generateModelTests>false</generateModelTests>.
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useJackson3>true</useJackson3>
                                 <useTags>true</useTags>
+                                <dateLibrary>java8</dateLibrary>
                             </configOptions>
                         </configuration>
                     </execution>
 
                     <execution>
                         <id>generate-payment-client</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -153,37 +192,25 @@
                             <inputSpec>${project.basedir}/src/main/resources/payment-service-api.yaml</inputSpec>
                             <generatorName>java</generatorName>
 
+                            <library>restclient</library>
+
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-                            <apiPackage>com.yourcompany.app.api.client</apiPackage>
-                            <modelPackage>com.yourcompany.app.model.client</modelPackage>
+
+                            <invokerPackage>com.hotel.assignment.payment.client</invokerPackage>
+                            <apiPackage>com.hotel.assignment.payment.client.api</apiPackage>
+                            <modelPackage>com.hotel.assignment.payment.client.model</modelPackage>
+
                             <configOptions>
-                                <library>native</library>
+                                <useSpringBoot4>true</useSpringBoot4>
+                                <useJackson3>true</useJackson3>
                                 <useJakartaEe>true</useJakartaEe>
-                                <generateApiTests>false</generateApiTests>
-                                <generateModelTests>false</generateModelTests>
+                                <dateLibrary>java8</dateLibrary>
                             </configOptions>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.5.5.Final</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
-
 </project>

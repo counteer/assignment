@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,7 +51,8 @@ class RoomReservationControllerTest {
         ReservationRequest request = createReservationRequest();
 
         ReservationResponse response = new ReservationResponse();
-        response.setReservationId(1L);
+        UUID reservationId = UUID.randomUUID();
+        response.setReservationId(reservationId);
         response.setReservationStatus(ReservationResponse.ReservationStatusEnum.PENDING_PAYMENT);
 
         when(mapper.toEntity(any(ReservationRequest.class))).thenReturn(new RoomReservation());
@@ -61,7 +63,7 @@ class RoomReservationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.reservationId").value(1))
+                .andExpect(jsonPath("$.reservationId").value(reservationId.toString()))
                 .andExpect(jsonPath("$.reservationStatus").value("PENDING_PAYMENT"));
     }
 
@@ -70,7 +72,7 @@ class RoomReservationControllerTest {
         ReservationRequest request = createReservationRequest();
 
         ReservationResponse response = new ReservationResponse();
-        response.setReservationId(1L);
+        response.setReservationId(UUID.randomUUID());
         response.setReservationStatus(ReservationResponse.ReservationStatusEnum.PENDING_PAYMENT);
 
         when(mapper.toEntity(any(ReservationRequest.class))).thenReturn(new RoomReservation());

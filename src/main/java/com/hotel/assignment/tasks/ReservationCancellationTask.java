@@ -1,6 +1,8 @@
 package com.hotel.assignment.tasks;
 
 import com.hotel.assignment.repository.RoomReservationRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,15 +17,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor
 public class ReservationCancellationTask {
 
-    private static final Logger log = LoggerFactory.getLogger(ReservationCancellationTask.class);
     private final RoomReservationRepository repository;
-
-    public ReservationCancellationTask(RoomReservationRepository repository) {
-        this.repository = repository;
-    }
-
+    
     // Runs every day at 1:00 AM
     @Scheduled(cron = "0 0 1 * * ?") 
     @Transactional

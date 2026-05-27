@@ -11,15 +11,6 @@ import java.time.OffsetDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PaymentFailedException.class)
-    public ResponseEntity<ErrorResponse> handlePaymentFailure(PaymentFailedException ex) {
-        ErrorResponse error = new ErrorResponse();
-        error.setTimestamp(OffsetDateTime.now());
-        error.setMessage(ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
-
     @ExceptionHandler(InvalidReservationException.class)
     public ResponseEntity<ErrorResponse> handleReservationFailure(InvalidReservationException ex) {
         ErrorResponse error = new ErrorResponse();

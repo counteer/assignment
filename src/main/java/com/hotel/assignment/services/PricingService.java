@@ -2,6 +2,8 @@ package com.hotel.assignment.services;
 
 import com.hotel.assignment.entities.RoomReservation;
 
+import java.math.BigDecimal;
+
 public interface PricingService {
-    Double calculateTotalAmount(RoomReservation reservation);
+    BigDecimal calculateTotalAmount(RoomReservation reservation);
 }

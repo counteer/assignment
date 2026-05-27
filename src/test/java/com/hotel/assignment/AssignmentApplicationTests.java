@@ -3,8 +3,8 @@ package com.hotel.assignment;
 import com.hotel.assignment.dto.PaymentUpdateEvent;
 import com.hotel.assignment.model.server.ReservationRequest;
 import com.hotel.assignment.model.server.ReservationResponse;
+import com.hotel.assignment.payment.client.api.DefaultApi;
 import com.hotel.assignment.repository.RoomReservationRepository;
-import com.yourcompany.app.api.client.DefaultApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +65,7 @@ class AssignmentApplicationTests {
 		assertEquals(1, repository.count());
 		var savedReservation = repository.findAll().getFirst();
 		assertEquals("Integration Tester", savedReservation.getNameOfCustomer());
-		assertEquals(400.0, savedReservation.getTotalAmount());
+		assertEquals(0, BigDecimal.valueOf(400).compareTo(savedReservation.getTotalAmount()));
 	}
 
 	@Test
